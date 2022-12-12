@@ -8,7 +8,7 @@ export const userSlice = createSlice({
     status: "idle",
     message: "logout",
     token: {},
-    userInfor: {},
+    currentUser: {},
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -23,7 +23,7 @@ export const userSlice = createSlice({
           : (state.message = "LoginSuccess");
         state.token = action.payload.accessToken;
         if (state.message === "LoginSuccess") {
-          state.userInfor = action.payload;
+          state.currentUser = action.payload.currentUser;
           localStorage.setItem("currentUser", JSON.stringify(action.payload.currentUser));
           localStorage.setItem("token", JSON.stringify(state.token));
         }
