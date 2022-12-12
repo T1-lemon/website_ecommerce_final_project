@@ -1,3 +1,4 @@
+import axiosInstance from "../utils/axiosInstance";
 import requestApi from "../utils/requestApi";
 
 export const loginServices = async (dataLogin) => {
@@ -15,3 +16,19 @@ export const loginServices = async (dataLogin) => {
     return error;
   }
 };
+
+
+export const getCurrentUser = async (accessToken) => {
+  try {
+    const respone = await requestApi({
+      method: "get", 
+      url: "user/get_infor", 
+      headers: {
+        Authorization: "Bearer " + accessToken,
+      },
+    });
+    return respone
+  } catch (error) {
+    return error
+  }
+}

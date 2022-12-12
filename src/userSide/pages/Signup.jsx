@@ -3,14 +3,17 @@ import Helmet from "../components/Helmet/Helmet";
 import { Container, Row, Col, Form, FormGroup } from "reactstrap";
 import { Link } from "react-router-dom";
 import "../styles/signup.css";
-import { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useDispatch } from "react-redux";
+import { signupServices } from "../../services/signupService";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { userLoginApi } from "../../redux/slices/userSlice";
 
 const Signup = () => {
-  const [username, setUsername] = useState();
-  const [email, setEmail] = useState();
-  const [passworld, setPassworld] = useState();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -47,8 +50,24 @@ const Signup = () => {
         ),
     }),
     onSubmit: (values) => {
-      window.alert("Form submitted");
-      console.log(values);
+      const dataSignup = { ...values };
+      delete dataSignup.confirmedPassword;
+
+      console.log(dataSignup);
+      const fectApiSignup = async () => {
+        // const respone = await signupServices(dataSignup);
+        toast.success("Signup successfully!");
+        const dataLogin = {
+          name: formik.values.name,
+          password: formik.values.password,
+        };
+        console.log(dataLogin);
+        await dispatch(userLoginApi(dataLogin));
+        // await dispatch(getCurrentUserApi());
+        navigate("/home");
+      };
+
+      fectApiSignup();
     },
   });
 
@@ -58,9 +77,9 @@ const Signup = () => {
         <Container>
           <Row>
             <Col lg="6" className="m-auto text-center">
-              <h3 className="fw-food fs-4">Login</h3>
+              <h3 className="fw-food fs-4">Sign up</h3>
               <Form className="auth__form" onSubmit={formik.handleSubmit}>
-                <FormGroup className="form__group" >
+                <FormGroup className="form__group">
                   <input
                     type="text"
                     id="name"
@@ -123,7 +142,9 @@ const Signup = () => {
                     <p className="errorMsg"> {formik.errors.phone} </p>
                   )}
                 </FormGroup>
-                <button className="buy__btn auth__btn" type="submit">Sign up</button>
+                <button className="buy__btn auth__btn" type="submit">
+                  Sign up
+                </button>
                 <p>
                   Create an account
                   <Link to="/login">Login</Link>

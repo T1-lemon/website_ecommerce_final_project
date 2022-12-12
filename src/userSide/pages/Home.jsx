@@ -14,7 +14,11 @@ import Helmet from "../components/Helmet/Helmet";
 import heroImg from "../../assets/images/hero-img.png";
 import counterImg from "../../assets/images/counter-timer-img.png";
 
+import { useDispatch, useSelector } from "react-redux";
+
 const Home = () => {
+
+  const dispatch = useDispatch();
   const [trendingProducts, setTrendingProducts] = useState([]);
   const [bestSalesProducts, setBestSalesProducts] = useState([]);
   const [mobileProducts, setMobileProducts] = useState([]);
@@ -47,6 +51,7 @@ const Home = () => {
     setPopularProducts(filterPopularProducts);
 
   }, []);
+
   return (
     <Helmet title={"Home"}>
       <section className="hero__section">

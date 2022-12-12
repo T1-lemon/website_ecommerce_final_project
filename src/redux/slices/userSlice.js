@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { loginServices } from "../../services/loginServices";
+import { getCurrentUser, loginServices } from "../../services/loginServices";
 import { toast } from "react-toastify";
 
 export const userSlice = createSlice({
@@ -7,6 +7,7 @@ export const userSlice = createSlice({
   initialState: {
     status: "idle",
     message: "logout",
+    token: {},
     userInfor: {},
   },
   reducers: {},
@@ -20,16 +21,27 @@ export const userSlice = createSlice({
         action.payload.accessToken === undefined
           ? (state.message = "LoginFail")
           : (state.message = "LoginSuccess");
-        state.userInfor = action.payload;
-      });
+        state.token = action.payload.accessToken;
+        if (state.message === "LoginSuccess") {
+          state.userInfor = action.payload;
+          localStorage.setItem("currentUser", JSON.stringify(action.payload.currentUser));
+          localStorage.setItem("token", JSON.stringify(state.token));
+        }
+      })
   },
 });
 
 export const userLoginApi = createAsyncThunk(
   "user/userLogin",
   async (dataLogin) => {
-      const respone = await loginServices(dataLogin);
-      return respone.data;
+    const responeToken = await loginServices(dataLogin);
+    const accessToken = responeToken.data.accessToken;
+    const responeCurrenUser = await getCurrentUser(accessToken);
+    const respone = {
+      accessToken,
+      currentUser: responeCurrenUser.data,
+    };
+    return respone;
   }
 );
 
