@@ -6,9 +6,11 @@ import Helmet from "../components/Helmet/Helmet";
 import ProductsList from "../components/UI/ProductsList";
 import "../styles/shop.css";
 
-import products from "../../assets/data/products";
+// import products from "../../assets/data/products";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
-const filterProducts = (filterValue, sortValue, searchValue) => {
+const filterProducts = (products, filterValue, sortValue, searchValue) => {
   const filterProductsSuccess =
     filterValue === "all"
       ? products
@@ -31,7 +33,11 @@ const filterProducts = (filterValue, sortValue, searchValue) => {
 };
 
 const Shop = () => {
-  const [productsData, setProductsData] = useState(products);
+  const products = useSelector(state => state.product.products)
+  const [productsData, setProductsData] = useState([]);
+  useEffect(() => {
+    setProductsData(products)
+  },[products])
   const [filterValue, setFilterValue] = useState("all");
   const [sortValue, setSortValue] = useState("all");
   const [searchValue, setSearchValue] = useState("");
@@ -39,6 +45,7 @@ const Shop = () => {
   const handleFilter = (e) => {
     const currentFilterValue = e.target.value;
     const filterProductsSuccess = filterProducts(
+      products,
       currentFilterValue,
       sortValue,
       searchValue

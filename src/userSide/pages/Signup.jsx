@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import { signupServices } from "../../services/signupService";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { userLoginApi } from "../../redux/slices/userSlice";
+import { userLoginApi, userSignupApi } from "../../redux/slices/userSlice";
 
 const Signup = () => {
   const dispatch = useDispatch();
@@ -55,15 +55,14 @@ const Signup = () => {
 
       console.log(dataSignup);
       const fectApiSignup = async () => {
-        // const respone = await signupServices(dataSignup);
-        toast.success("Signup successfully!");
+        await dispatch(userSignupApi(dataSignup));
         const dataLogin = {
           name: formik.values.name,
           password: formik.values.password,
         };
         console.log(dataLogin);
         await dispatch(userLoginApi(dataLogin));
-        // await dispatch(getCurrentUserApi());
+        toast.success("Signup successfully!");
         navigate("/home");
       };
 

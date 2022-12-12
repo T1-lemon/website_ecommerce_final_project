@@ -11,7 +11,7 @@ import { cartActions } from "../../../redux/slices/cartSlice";
 
 const ProductCard = (props) => {
   const { item } = props;
-
+  
   const dispatch = useDispatch();
 
   const addToCart = () => {
@@ -32,19 +32,19 @@ const ProductCard = (props) => {
         <div className="product__img">
           <motion.img
             whileHover={{ scale: 0.9 }}
-            src={item.imgUrl}
+            src={item.image}
             alt="productImg"
           />
           <div className="p-2 product__info">
             <h3 className="product__name">
-              <Link to={`/shop/${item.id}`}>{item.productName}</Link>
+              <Link to={`/shop/${item.id}`}>{item.name}</Link>
             </h3>
-            <span>{item.category}</span>
+            <span>{item.Category.category_name}</span>
           </div>
           <div className="product__card-bottom d-flex align-items-center justify-content-between p-2">
             <span className="price">${item.price}</span>
             <motion.span whileTap={{ scale: 1.2 }} onClick={addToCart}>
-              <i class="ri-add-line"></i>
+              <i className="ri-add-line"></i>
             </motion.span>
           </div>
         </div>

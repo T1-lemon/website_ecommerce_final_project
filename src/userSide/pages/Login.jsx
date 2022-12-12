@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -42,6 +42,7 @@ const Login = () => {
     const fectLoginApi = async () => {
       await dispatch(userLoginApi(data));
       await navigate("/home")
+      toast.success("Login successfully!")
     };
 
     if (data !== undefined) fectLoginApi();

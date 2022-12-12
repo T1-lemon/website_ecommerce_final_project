@@ -1,4 +1,3 @@
-import axiosInstance from "../utils/axiosInstance";
 import requestApi from "../utils/requestApi";
 
 export const loginServices = async (dataLogin) => {

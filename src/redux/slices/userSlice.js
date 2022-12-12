@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { getCurrentUser, loginServices } from "../../services/loginServices";
-import { toast } from "react-toastify";
+import { signupServices } from "../../services/signupService";
 
 export const userSlice = createSlice({
   name: "user",
@@ -28,6 +28,9 @@ export const userSlice = createSlice({
           localStorage.setItem("token", JSON.stringify(state.token));
         }
       })
+      .addCase(userSignupApi.pending, (state) => {
+        state.status = "loading";
+      })
   },
 });
 
@@ -45,3 +48,9 @@ export const userLoginApi = createAsyncThunk(
   }
 );
 
+export const userSignupApi = createAsyncThunk(
+  "user/userSignup", 
+  async (dataSignup) => {
+    await signupServices(dataSignup);
+  }
+)

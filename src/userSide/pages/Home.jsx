@@ -8,17 +8,19 @@ import Services from "../components/UI/Services";
 import Clock from "../components/UI/Clock";
 
 import ProductsList from "../components/UI/ProductsList";
-import products from "../../assets/data/products";
+// import products from "../../assets/data/products";
 
 import Helmet from "../components/Helmet/Helmet";
 import heroImg from "../../assets/images/hero-img.png";
 import counterImg from "../../assets/images/counter-timer-img.png";
 
 import { useDispatch, useSelector } from "react-redux";
+import { getAllProductsApi } from "../../redux/slices/productSlice";
 
 const Home = () => {
-
   const dispatch = useDispatch();
+  const products = useSelector(state => state.product.products)
+
   const [trendingProducts, setTrendingProducts] = useState([]);
   const [bestSalesProducts, setBestSalesProducts] = useState([]);
   const [mobileProducts, setMobileProducts] = useState([]);

@@ -24,28 +24,8 @@ const nav__links = [
 ];
 
 const Header = () => {
-  const headerRef = useRef(null);
   const menuRef = useRef(null);
   const totalQuantity = useSelector((state) => state.cart.totalQuantity);
-
-  // const stickyHeaderFunc = () => {
-  //   window.addEventListener("scroll", () => {
-  //     if (
-  //       document.body.scrollTo > 80 ||
-  //       document.documentElement.scrollTo > 80
-  //     ) {
-  //       headerRef.current.classList.add("sticky__header");
-  //     } else {
-  //       headerRef.current.classList.remove("sticky__header");
-  //     }
-  //   });
-  // };
-
-  // useEffect(() => {
-  //   stickyHeaderFunc();
-
-  //   return () => window.removeEventListener("scroll", stickyHeaderFunc);
-  // });
 
   const menuToggle = () => menuRef.current.classList.toggle("active__menu");
 
