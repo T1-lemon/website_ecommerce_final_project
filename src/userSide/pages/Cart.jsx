@@ -9,12 +9,11 @@ import "../styles/cart.css";
 import { Link } from "react-router-dom";
 import { deleteCartItemApi } from "../../redux/slices/cartSlice";
 
-const accessToken = JSON.parse(localStorage.getItem("token"));
-
 const Cart = () => {
   const [loadingDelete, setLoadingDelete] = useState(false);
   const cartItems = useSelector((state) => state.cart.cartItems);
   const subTotal = useSelector((state) => state.cart.totalAmount);
+  const accessToken = JSON.parse(localStorage.getItem("token"));
 
   const dispatch = useDispatch();
   const removeProductFromCart = (id) => {
