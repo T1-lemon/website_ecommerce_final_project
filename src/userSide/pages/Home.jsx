@@ -16,9 +16,9 @@ import counterImg from "../../assets/images/counter-timer-img.png";
 
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProductsApi } from "../../redux/slices/productSlice";
-
+import { useNavigate } from "react-router-dom";
 const Home = () => {
-  const dispatch = useDispatch();
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   const products = useSelector(state => state.product.products)
 
   const [trendingProducts, setTrendingProducts] = useState([]);
@@ -69,7 +69,7 @@ const Home = () => {
                   fugit sunt obcaecati?
                 </p>
                 <motion.button whileTap={{ scale: 1.1 }} className="buy__btn">
-                  <Link to="shop">SHOP NOW</Link>
+                  <Link to={currentUser ? "/shop" : "/login"}>SHOP NOW</Link>
                 </motion.button>
               </div>
             </Col>
