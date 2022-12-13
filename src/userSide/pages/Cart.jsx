@@ -1,21 +1,46 @@
-import React from "react";
-import { Container, Row, Col } from "reactstrap";
+import React, { useState } from "react";
+import { Container, Row, Col, Progress } from "reactstrap";
 import { useSelector, useDispatch } from "react-redux";
 
 import Helmet from "../components/Helmet/Helmet";
 import CommonSection from "../components/UI/CommonSection";
 import { motion } from "framer-motion";
-import { cartActions } from "../../redux/slices/cartSlice";
-
-import tdImg from "../../assets/images/arm-chair-01.jpg";
 import "../styles/cart.css";
 import { Link } from "react-router-dom";
+import { deleteCartItemApi } from "../../redux/slices/cartSlice";
+
+const accessToken = JSON.parse(localStorage.getItem("token"));
 
 const Cart = () => {
+  const [loadingDelete, setLoadingDelete] = useState(false);
   const cartItems = useSelector((state) => state.cart.cartItems);
-  const totalAmount = useSelector((state) => state.cart.totalAmount);
+  const subTotal = useSelector((state) => state.cart.totalAmount);
+
+  const dispatch = useDispatch();
+  const removeProductFromCart = (id) => {
+    const dataCartDelete = {
+      id,
+      accessToken,
+    };
+
+    console.log(dataCartDelete);
+
+    const fetchRemoveProductFromCartApi = async () => {
+      setLoadingDelete(true);
+      await dispatch(deleteCartItemApi(dataCartDelete));
+      setLoadingDelete(false);
+    };
+
+    fetchRemoveProductFromCartApi();
+  };
+
   return (
     <Helmet title="Cart">
+      {loadingDelete ? (
+        <Progress animated value="100" className="progress"></Progress>
+      ) : (
+        ""
+      )}
       <CommonSection title="Shopping Cart" />
       <section>
         <Container>
@@ -36,7 +61,11 @@ const Cart = () => {
                   </thead>
                   <tbody>
                     {cartItems.map((item, index) => (
-                      <Tr item={item} key={index} />
+                      <Tr
+                        item={item}
+                        key={index}
+                        onRemoveProductFromCart={removeProductFromCart}
+                      />
                     ))}
                   </tbody>
                 </table>
@@ -46,7 +75,7 @@ const Cart = () => {
               <div>
                 <h6 className="d-flex align-items-center justify-content-between">
                   Subtotal
-                  <span className="fs-4 fw-bold">${totalAmount}</span>
+                  <span className="fs-4 fw-bold">${subTotal}</span>
                 </h6>
               </div>
               <p className="fs-6 mt-2">
@@ -69,23 +98,21 @@ const Cart = () => {
 };
 
 const Tr = (props) => {
-  const { item } = props;
-  const dispatch = useDispatch();
-
-  const deleteProduct = () => {
-    dispatch(cartActions.deleteItem(item.id));
-  };
+  const { item, onRemoveProductFromCart } = props;
 
   return (
     <tr>
       <td>
-        <img src={item.imgUrl} alt="#" />
+        <img src={item.Product.image} alt="#" />
       </td>
-      <td>{item.productName}</td>
-      <td>{item.price}</td>
+      <td>{item.Product.name}</td>
+      <td>{item.Product.price}</td>
       <td>{item.quantity}</td>
       <td>
-        <motion.span whileTap={{ scale: 1.2 }} onClick={deleteProduct}>
+        <motion.span
+          whileTap={{ scale: 1.2 }}
+          onClick={() => onRemoveProductFromCart(item.id)}
+        >
           <i className="ri-delete-bin-line"></i>
         </motion.span>
       </td>

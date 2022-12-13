@@ -53,7 +53,7 @@ const Home = () => {
     setPopularProducts(filterPopularProducts);
 
   }, []);
-
+  
   return (
     <Helmet title={"Home"}>
       <section className="hero__section">
@@ -148,3 +148,4 @@ const Home = () => {
 };
 
 export default Home;
+

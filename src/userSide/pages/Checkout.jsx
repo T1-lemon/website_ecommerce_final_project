@@ -5,13 +5,38 @@ import { Container, Row, Col, Form, FormGroup } from "reactstrap";
 import Helmet from "../components/Helmet/Helmet";
 import CommonSection from "../components/UI/CommonSection";
 
+import { Formik, useFormik } from "formik";
+import * as Yup from "yup";
 import "../styles/checkout.css";
 
 const Checkout = () => {
+  const totalQty = useSelector((state) => state.cart.totalQuantity);
+  const totalAmount = useSelector((state) => state.cart.totalAmount);
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  console.log(currentUser);
 
-  const totalQty = useSelector(state => state.cart.totalQuantity);
-  const totalAmount = useSelector(state => state.cart.totalAmount);
+  const formik = useFormik({
+    initialValues: {
+      name: currentUser.user_name,
+      email: currentUser.email,
+      number: "",
+      address: "",
+      city: "",
+    },
+    validationSchema: Yup.object({
+      number: Yup.string().required("Required"),
+      address: Yup.string().required("Required"),
+      city: Yup.string().required("Required"),
+    })
+  });
 
+  const handleSubmit = () => {
+    const errNumber = formik.errors.number;
+    const errAddress = formik.errors.address;
+    const errCity = formik.errors.city; 
+
+    errNumber || errAddress || errCity ? console.log("abc") : window.alert("submit success");
+  }
   return (
     <Helmet title="Checkout">
       <CommonSection title="Checkout" />
@@ -22,25 +47,49 @@ const Checkout = () => {
               <h6 className="mb-4 fw-bold">Billing Information</h6>
               <Form className="billing__form">
                 <FormGroup className="form__group">
-                  <input type="text" placeholder="Enter your name" />
+                  <input
+                    type="text"
+                    placeholder="Enter your name"
+                    id="name"
+                    readOnly
+                    defaultValue={formik.values.name}
+                  />
                 </FormGroup>
                 <FormGroup className="form__group">
-                  <input type="eamil" placeholder="Enter your email" />
+                  <input
+                    type="eamil"
+                    placeholder="Enter your email"
+                    readOnly
+                    id="email"
+                    defaultValue={formik.values.email}
+                  />
                 </FormGroup>
                 <FormGroup className="form__group">
-                  <input type="number" placeholder="Phone number" />
+                  <input
+                    type="number"
+                    placeholder="Phone number"
+                    id="number"
+                    value={formik.values.number}
+                    onChange={formik.handleChange}
+                  />
                 </FormGroup>
                 <FormGroup className="form__group">
-                  <input type="text" placeholder="Street address" />
+                  <input
+                    type="text"
+                    placeholder="Street address"
+                    id="address"
+                    value={formik.values.address}
+                    onChange={formik.handleChange}
+                  />
                 </FormGroup>
                 <FormGroup className="form__group">
-                  <input type="text" placeholder="City" />
-                </FormGroup>
-                <FormGroup className="form__group">
-                  <input type="text" placeholder="Postal code" />
-                </FormGroup>
-                <FormGroup className="form__group">
-                  <input type="text" placeholder="Country" />
+                  <input
+                    type="text"
+                    placeholder="City"
+                    id="city"
+                    value={formik.values.city}
+                    onChange={formik.handleChange}
+                  />
                 </FormGroup>
               </Form>
             </Col>
@@ -59,7 +108,7 @@ const Checkout = () => {
                 <h4>
                   Total Cost: <span>${totalAmount}</span>
                 </h4>
-                <button className="buy__btn auth__btn w-100">
+                <button className="buy__btn auth__btn w-100" onClick={handleSubmit}>
                   Place an order
                 </button>
               </div>
