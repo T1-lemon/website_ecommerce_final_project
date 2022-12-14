@@ -23,7 +23,7 @@ const Order = () => {
     <div>
       {orderArray.length !== 0
         ? orderArray.map((item, index) => {
-            return <OrderCard item={item} key={item} />;
+            return <OrderCard item={item} key={index} />;
           })
         : <div className="loading--api">
           <Spinner animation="grow" variant="success" />

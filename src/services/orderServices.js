@@ -39,7 +39,7 @@ export const getDetailsOrderService = async (dataOrderDetail) => {
   try {
     const respone = await requestApi({
       method: "get",
-      url: `order/${dataOrderDetail.id}`,
+      url: `orderItem/${dataOrderDetail.id}`,
       headers: {
         Authorization: "Bearer " + `${dataOrderDetail.accessToken}`,
       },

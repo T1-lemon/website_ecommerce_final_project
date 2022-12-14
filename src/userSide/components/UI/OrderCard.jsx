@@ -17,7 +17,7 @@ const OrderCard = (props) => {
   const date = new Date(item.createdAt);
   const navigate = useNavigate();
   const handleClick = () => {
-    navigate(`order/${item.id}`)
+    navigate(`/order/${item.id}`)
   };
   return (
     <>

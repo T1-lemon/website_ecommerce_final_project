@@ -53,7 +53,6 @@ const Signup = () => {
       const dataSignup = { ...values };
       delete dataSignup.confirmedPassword;
 
-      console.log(dataSignup);
       const fectApiSignup = async () => {
         await dispatch(userSignupApi(dataSignup));
         const dataLogin = {
