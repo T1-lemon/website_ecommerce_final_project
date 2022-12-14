@@ -115,7 +115,8 @@ const Header = () => {
                     </DropdownToggle>
                     <DropdownMenu className="drop__menu">
                       <DropdownItem className="drop__menu--item">
-                        Settings
+                        <NavLink to="/profile" className="text-dark"> Settings</NavLink>
+                       
                       </DropdownItem>
                       <DropdownItem className="drop__menu--item" onClick={handleLogout}>
                         Log out

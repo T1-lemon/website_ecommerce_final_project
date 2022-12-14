@@ -9,6 +9,7 @@ import Login from "../userSide/pages/Login";
 import Signup from "../userSide/pages/Signup";
 import Order from "../userSide/pages/Order";
 import { OrderDetail } from "../userSide/components/UI/OrderDetail";
+import Profile from "../userSide/pages/Profile/Profile";
 
 const Routers = () => {
   return (
@@ -23,6 +24,8 @@ const Routers = () => {
         <Route path="signup" element={<Signup />} />
         <Route path="order" element={<Order />} />
         <Route path="order/:id" element={<OrderDetail />} />
+        <Route path="profile" element={<Profile />} />
+
       </Routes>
   );
 };
