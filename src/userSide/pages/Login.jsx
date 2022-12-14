@@ -63,7 +63,7 @@ const Login = () => {
                     name="name"
                     value={formik.values.name}
                     onChange={formik.handleChange}
-                    placeholder="Enter your email"
+                    placeholder="Enter your username"
                   />
                 </FormGroup>
                 <FormGroup className="form__group">

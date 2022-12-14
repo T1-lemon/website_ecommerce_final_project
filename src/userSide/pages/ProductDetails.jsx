@@ -160,7 +160,7 @@ const ProductDetails = () => {
                     </div>
                     <div className="d-flex align-items-center gap-5">
                       <span className="product__price">
-                        ${productDetail.price}
+                        {productDetail.price} VND
                       </span>
                       <span>
                         Category:{" "}

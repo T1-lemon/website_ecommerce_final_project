@@ -37,7 +37,7 @@ const nav__links = [
 const Header = () => {
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   const userAvatar = currentUser ? currentUser.avatar : user_icon;
-  const userName = currentUser ? currentUser.user_name : '';
+  const userName = currentUser ? currentUser.user_name : "";
   console.log(currentUser);
   const menuRef = useRef(null);
 
@@ -57,8 +57,12 @@ const Header = () => {
   const handleLogout = () => {
     localStorage.removeItem("currentUser");
     localStorage.removeItem("token");
-    navigate('/home');
+    navigate("/home");
     window.location.reload(false);
+  };
+
+  const handleClickLogin = () => {
+    navigate("/login");
   }
   return (
     <header className="sticky__header">
@@ -114,13 +118,26 @@ const Header = () => {
                       </span>
                     </DropdownToggle>
                     <DropdownMenu className="drop__menu">
-                      <DropdownItem className="drop__menu--item">
-                        <NavLink to="/profile" className="text-dark"> Settings</NavLink>
-                       
-                      </DropdownItem>
-                      <DropdownItem className="drop__menu--item" onClick={handleLogout}>
-                        Log out
-                      </DropdownItem>
+                      {currentUser ? (
+                        <>
+                          <DropdownItem className="drop__menu--item">
+                            <NavLink to="/profile" className="text-dark">
+                              {" "}
+                              Settings
+                            </NavLink>
+                          </DropdownItem>
+                          <DropdownItem
+                            className="drop__menu--item"
+                            onClick={handleLogout}
+                          >
+                            Log out
+                          </DropdownItem>
+                        </>
+                      ) : (
+                        <DropdownItem className="drop__menu--item" onClick={handleClickLogin}>
+                          Login
+                        </DropdownItem>
+                      )}
                     </DropdownMenu>
                   </Dropdown>
                 </div>
