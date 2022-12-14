@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { getCurrentUser, loginServices } from "../../services/loginServices";
 import { signupServices } from "../../services/signupService";
+import { editProfileService } from "../../services/userService";
 
 export const userSlice = createSlice({
   name: "user",
@@ -24,13 +25,16 @@ export const userSlice = createSlice({
         state.token = action.payload.accessToken;
         if (state.message === "LoginSuccess") {
           state.currentUser = action.payload.currentUser;
-          localStorage.setItem("currentUser", JSON.stringify(action.payload.currentUser));
+          localStorage.setItem(
+            "currentUser",
+            JSON.stringify(action.payload.currentUser)
+          );
           localStorage.setItem("token", JSON.stringify(state.token));
         }
       })
       .addCase(userSignupApi.pending, (state) => {
         state.status = "loading";
-      })
+      });
   },
 });
 
@@ -44,14 +48,24 @@ export const userLoginApi = createAsyncThunk(
       accessToken,
       currentUser: responeCurrenUser.data,
     };
-    console.log(respone)
+    console.log(respone);
     return respone;
   }
 );
 
 export const userSignupApi = createAsyncThunk(
-  "user/userSignup", 
+  "user/userSignup",
   async (dataSignup) => {
     await signupServices(dataSignup);
   }
-)
+);
+export const editProfileApi = (userId,userEdit,token) => {
+  // console.log(userId,userEdit);
+  return async (dispatch) => {
+    const { data } = await editProfileService(userId,userEdit,token);
+    // console.log(data);
+
+    localStorage.setItem("currentUser", JSON.stringify(data));
+
+  };
+};
