@@ -6,7 +6,7 @@ import "./profile.css"
 
 export default function Profile() {
   return (
-    <div className="container">
+    <div className="container container__profile">
     <Row >
         <Col xs={12} xl={8}>
           <GeneralInfoForm />
