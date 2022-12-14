@@ -14,7 +14,6 @@ const LayoutUserSide = () => {
       ? tokenRedux
       : JSON.parse(localStorage.getItem("token"));
 
-  console.log(accessToken);
   useEffect(() => {
     const fetchGetAllProductsApi = async () => {
       await dispatch(getAllProductsApi());

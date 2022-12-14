@@ -28,9 +28,17 @@ const nav__links = [
     path: "cart",
     display: "Cart",
   },
+  {
+    path: "order",
+    display: "Order",
+  },
 ];
 
 const Header = () => {
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const userAvatar = currentUser ? currentUser.avatar : user_icon;
+  const userName = currentUser ? currentUser.user_name : '';
+  console.log(currentUser);
   const menuRef = useRef(null);
 
   const totalQuantity = useSelector((state) => state.cart.totalQuantity);
@@ -46,12 +54,18 @@ const Header = () => {
 
   const toggle = () => setDropdownOpen((prevState) => !prevState);
 
+  const handleLogout = () => {
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("token");
+    navigate('/home');
+    window.location.reload(false);
+  }
   return (
     <header className="sticky__header">
       <Container>
         <Row>
           <div className="nav__wrapper">
-            <Link to = "/home">
+            <Link to="/home">
               <div className="logo">
                 <img src={logo} alt="logo" />
                 <div>
@@ -79,34 +93,39 @@ const Header = () => {
             </div>
 
             <div className="nav__icons">
-              <span className="fav__icon">
+              {/* <span className="fav__icon">
                 <i className="ri-heart-line"></i>
                 <span className="badge">1</span>
-              </span>
+              </span> */}
               <span className="cart__icon" onClick={navigateToCart}>
                 <i className="ri-shopping-bag-line"></i>
                 <span className="badge">{totalQuantity}</span>
               </span>
-              <div>
-                <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-                  <DropdownToggle className="bg-white border-0">
-                    <span>
-                      <motion.img
-                        whileTap={{ scale: 1.2 }}
-                        src={user_icon}
-                        alt="userIcon"
-                      />
-                    </span>
-                  </DropdownToggle>
-                  <DropdownMenu className="drop__menu">
-                    <DropdownItem className="drop__menu--item">
-                      Log out
-                    </DropdownItem>
-                    <DropdownItem className="drop__menu--item">
-                      Settings
-                    </DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
+              <div className="user__group">
+                <div>
+                  <Dropdown isOpen={dropdownOpen} toggle={toggle}>
+                    <DropdownToggle className="bg-white border-0">
+                      <span>
+                        <motion.img
+                          whileTap={{ scale: 1.2 }}
+                          src={userAvatar}
+                          alt="userIcon"
+                        />
+                      </span>
+                    </DropdownToggle>
+                    <DropdownMenu className="drop__menu">
+                      <DropdownItem className="drop__menu--item">
+                        Settings
+                      </DropdownItem>
+                      <DropdownItem className="drop__menu--item" onClick={handleLogout}>
+                        Log out
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                </div>
+                <div>
+                  <span>{userName}</span>
+                </div>
               </div>
               <div className="mobile__menu">
                 <span onClick={menuToggle}>

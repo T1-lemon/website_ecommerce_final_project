@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Container, Row, Col, Spinner } from "reactstrap";
+import { Container, Row, Col, Spinner, Progress } from "reactstrap";
 import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useDispatch } from "react-redux";
@@ -25,10 +25,12 @@ import {
 const RATINGS = [1, 2, 3, 4, 5];
 const ProductDetails = () => {
   const accessToken = JSON.parse(localStorage.getItem("token"));
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   const dispatch = useDispatch();
   const [productDetail, setProductDetail] = useState({});
   const [countAddCart, setCountAddCart] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [loadingCart, setLoadingCart] = useState(false);
 
   const { id } = useParams();
 
@@ -65,7 +67,6 @@ const ProductDetails = () => {
       rating,
       accessToken,
     };
-    console.log(dataFeedBack);
 
     const fetchFeedBackApi = async () => {
       const respone = await postFeedBackService(dataFeedBack);
@@ -79,8 +80,12 @@ const ProductDetails = () => {
       toast.success("Review submitted");
     };
 
-    fetchFeedBackApi();
-    reviewMsg.current.value = "";
+    if (currentUser !== null) {
+      fetchFeedBackApi();
+      reviewMsg.current.value = "";
+    } else {
+      toast.error("You must login before comment");
+    }
   };
 
   const addToCart = () => {
@@ -92,11 +97,16 @@ const ProductDetails = () => {
     };
     console.log(dataCart);
     const fetchAddProductToCartApi = async () => {
+      setLoadingCart(true);
       await dispatch(addProductToCartApi(dataCart));
+      setLoadingCart(false);
       toast.success(`${productDetail.name} added successfully`);
     };
-
-    fetchAddProductToCartApi();
+    if (currentUser !== null) {
+      fetchAddProductToCartApi();
+    } else {
+      toast.error("You must login before add product to cart");
+    }
   };
 
   useEffect(() => {
@@ -105,6 +115,11 @@ const ProductDetails = () => {
 
   return (
     <Helmet title={productDetail.name}>
+      {loadingCart ? (
+        <Progress animated value="100" className="progress"></Progress>
+      ) : (
+        ""
+      )}
       <CommonSection title={productDetail.name} />
       {loading === true ? (
         <div className="loading--api">

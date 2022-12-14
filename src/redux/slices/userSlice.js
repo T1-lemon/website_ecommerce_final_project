@@ -44,6 +44,7 @@ export const userLoginApi = createAsyncThunk(
       accessToken,
       currentUser: responeCurrenUser.data,
     };
+    console.log(respone)
     return respone;
   }
 );

@@ -8,26 +8,25 @@ import { motion } from "framer-motion";
 import "../styles/cart.css";
 import { Link } from "react-router-dom";
 import { deleteCartItemApi } from "../../redux/slices/cartSlice";
+import { toast } from "react-toastify";
 
 const Cart = () => {
   const [loadingDelete, setLoadingDelete] = useState(false);
   const cartItems = useSelector((state) => state.cart.cartItems);
   const subTotal = useSelector((state) => state.cart.totalAmount);
   const accessToken = JSON.parse(localStorage.getItem("token"));
-
   const dispatch = useDispatch();
   const removeProductFromCart = (id) => {
     const dataCartDelete = {
       id,
       accessToken,
     };
-
     console.log(dataCartDelete);
-
     const fetchRemoveProductFromCartApi = async () => {
       setLoadingDelete(true);
       await dispatch(deleteCartItemApi(dataCartDelete));
       setLoadingDelete(false);
+      toast.success("Delete sucessfully!");
     };
 
     fetchRemoveProductFromCartApi();

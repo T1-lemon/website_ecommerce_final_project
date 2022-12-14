@@ -7,6 +7,8 @@ import ProductDetails from "../userSide/pages/ProductDetails";
 import Checkout from "../userSide/pages/Checkout";
 import Login from "../userSide/pages/Login";
 import Signup from "../userSide/pages/Signup";
+import Order from "../userSide/pages/Order";
+import { OrderDetail } from "../userSide/components/UI/OrderDetail";
 
 const Routers = () => {
   return (
@@ -19,6 +21,8 @@ const Routers = () => {
         <Route path="checkout" element={<Checkout />} />
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<Signup />} />
+        <Route path="order" element={<Order />} />
+        <Route path="order/:id" element={<OrderDetail />} />
       </Routes>
   );
 };

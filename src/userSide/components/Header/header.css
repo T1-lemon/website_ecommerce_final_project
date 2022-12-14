@@ -62,8 +62,8 @@
 
 .badge {
     position: absolute;
-    top: 22%;
-    right: -5%;
+    top: 26%;
+    right: -33%;
     width: 15px;
     height: 15px;
     background: var(--primary-color);
@@ -81,6 +81,7 @@
     width: 30px;
     height: 30px;
     cursor: pointer;
+    border-radius: 30px;
 }
 
 .mobile__menu {
@@ -112,6 +113,10 @@
     text-align: center;
     line-height: 12px !important;
     padding: 10px;
+}
+
+.user__group {
+    display: flex;
 }
 @media only screen and (max-width: 768px) {
     .navigation {

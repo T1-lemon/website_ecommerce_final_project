@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { Container, Row, Col, Form, FormGroup } from "reactstrap";
+import { Container, Row, Col, Form, FormGroup, Progress } from "reactstrap";
 
 import Helmet from "../components/Helmet/Helmet";
 import CommonSection from "../components/UI/CommonSection";
@@ -8,12 +8,21 @@ import CommonSection from "../components/UI/CommonSection";
 import { Formik, useFormik } from "formik";
 import * as Yup from "yup";
 import "../styles/checkout.css";
+import { toast } from "react-toastify";
+import { createOrderService } from "../../services/orderServices";
+import { useDispatch } from "react-redux";
+import { getAllCartItemApi } from "../../redux/slices/cartSlice";
+import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
   const totalQty = useSelector((state) => state.cart.totalQuantity);
   const totalAmount = useSelector((state) => state.cart.totalAmount);
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  console.log(currentUser);
+  const accessToken = JSON.parse(localStorage.getItem("token"));
+  const [loading, setLoading] = useState(false);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -27,18 +36,48 @@ const Checkout = () => {
       number: Yup.string().required("Required"),
       address: Yup.string().required("Required"),
       city: Yup.string().required("Required"),
-    })
+    }),
   });
 
   const handleSubmit = () => {
-    const errNumber = formik.errors.number;
-    const errAddress = formik.errors.address;
-    const errCity = formik.errors.city; 
+    const errNumber =
+      formik.values.number === "" ? "requirer" : formik.errors.number;
+    const errAddress =
+      formik.values.address === "" ? "requirer" : formik.errors.address;
+    const errCity = formik.values.city === "" ? "requirer" : formik.errors.city;
 
-    errNumber || errAddress || errCity ? console.log("abc") : window.alert("submit success");
-  }
+    if (errNumber || errAddress || errCity) {
+      toast.error("Invaild input order");
+      return;
+    }
+
+    const dataCreateOrder = {
+      name: formik.values.name,
+      address: formik.values.address,
+      number: formik.values.number,
+      accessToken,
+    };
+
+    const fetchCreateOrderApi = async () => {
+      setLoading(true);
+      const responeOrder = await createOrderService(dataCreateOrder);
+      await dispatch(getAllCartItemApi(accessToken));
+
+      toast.success("Place an order sucessfully");
+      setLoading(false);
+      console.log(responeOrder.data);
+      navigate("/order");
+    };
+
+    fetchCreateOrderApi();
+  };
   return (
     <Helmet title="Checkout">
+      {loading ? (
+        <Progress animated value="100" className="progress"></Progress>
+      ) : (
+        ""
+      )}
       <CommonSection title="Checkout" />
       <section>
         <Container>
@@ -108,7 +147,10 @@ const Checkout = () => {
                 <h4>
                   Total Cost: <span>${totalAmount}</span>
                 </h4>
-                <button className="buy__btn auth__btn w-100" onClick={handleSubmit}>
+                <button
+                  className="buy__btn auth__btn w-100"
+                  onClick={handleSubmit}
+                >
                   Place an order
                 </button>
               </div>
