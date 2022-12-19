@@ -63,7 +63,7 @@ const Header = () => {
 
   const handleClickLogin = () => {
     navigate("/login");
-  }
+  };
   return (
     <header className="sticky__header">
       <Container>
@@ -120,12 +120,17 @@ const Header = () => {
                     <DropdownMenu className="drop__menu">
                       {currentUser ? (
                         <>
-                          <DropdownItem className="drop__menu--item">
-                            <NavLink to="/profile" className="text-dark">
+                          {" "}
+                          <NavLink
+                            to="/profile"
+                            className="text-dark"
+                            style={{ textDecoration: "none" }}
+                          >
+                            <DropdownItem className="drop__menu--item">
                               {" "}
                               Settings
-                            </NavLink>
-                          </DropdownItem>
+                            </DropdownItem>
+                          </NavLink>
                           <DropdownItem
                             className="drop__menu--item"
                             onClick={handleLogout}
@@ -134,7 +139,10 @@ const Header = () => {
                           </DropdownItem>
                         </>
                       ) : (
-                        <DropdownItem className="drop__menu--item" onClick={handleClickLogin}>
+                        <DropdownItem
+                          className="drop__menu--item"
+                          onClick={handleClickLogin}
+                        >
                           Login
                         </DropdownItem>
                       )}
