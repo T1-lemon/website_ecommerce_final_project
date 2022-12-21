@@ -45,3 +45,14 @@ export const editProductService = (formData, id) => {
     },
   });
 };
+
+export const changeStatusProductService = (idProduct,status_number) => {
+  return requestApi({
+    url: `product/change_status/${idProduct}`,
+    method: "put",
+    data: {status_number},
+    headers: {
+      Authorization: "Bearer " + JSON.parse(localStorage.getItem("token")),
+    },
+  });
+};

@@ -4,6 +4,8 @@ import { userSlice } from "./slices/userSlice";
 import { productSlice } from "./slices/productSlice";
 import globalSlice  from "./slices/globalSlice";
 import categorySlice  from "./slices/categorySlice";
+import orderSlice  from "./slices/orderSlice";
+
 
 
 const store = configureStore({
@@ -12,7 +14,8 @@ const store = configureStore({
         cart: cartSlice,
         product: productSlice.reducer,
         globalSlice,
-        categorySlice
+        categorySlice,
+        orderSlice
     }
 })
 

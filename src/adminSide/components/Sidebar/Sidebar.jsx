@@ -12,6 +12,11 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import Collapse from "@mui/material/Collapse";
+import PendingOutlinedIcon from "@mui/icons-material/PendingOutlined";
+import DeliveryDiningOutlinedIcon from "@mui/icons-material/DeliveryDiningOutlined";
 import {
   SettingsOutlined,
   ChevronLeft,
@@ -20,18 +25,10 @@ import {
   ShoppingCartOutlined,
   Groups2Outlined,
   ReceiptLongOutlined,
-  PublicOutlined,
-  PointOfSaleOutlined,
-  TodayOutlined,
-  CalendarMonthOutlined,
-  AdminPanelSettingsOutlined,
-  TrendingUpOutlined,
-  PieChartOutlined,
 } from "@mui/icons-material";
 import { useEffect, useState } from "react";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import FlexBetween from "../FlexBetween";
-import profileImage from "../../assets/profile.jpeg";
 import "./Sidebar.css";
 
 const navItems = [
@@ -54,15 +51,23 @@ const navItems = [
     icon: <Groups2Outlined />,
     url: "category",
   },
+  // {
+  //   text: "Blog",
+  //   icon: <PublicOutlined />,
+  //   url: "blog",
+  // },
+];
+
+const subNavItemOrder = [
   {
-    text: "Orders",
-    icon: <ReceiptLongOutlined />,
-    url: "orders",
+    text: "Pending",
+    icon: <PendingOutlinedIcon />,
+    url: "pending",
   },
   {
-    text: "Blog",
-    icon: <PublicOutlined />,
-    url: "blog",
+    text: "Deliveried",
+    icon: <DeliveryDiningOutlinedIcon />,
+    url: "deliveried",
   },
 ];
 
@@ -73,14 +78,12 @@ const Sidebar = ({
   setIsSidebarOpen,
   isNonMobile,
 }) => {
-  const { pathname } = useLocation();
-  // const [active, setActive] = useState("");
-  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
   const theme = useTheme();
 
-  // useEffect(() => {
-  //   setActive(pathname.substring(1));
-  // }, [pathname]);
+  const handleClick = () => {
+    setOpen(!open);
+  };
 
   return (
     <Box component="nav">
@@ -147,7 +150,6 @@ const Sidebar = ({
                               backgroundColor: "transparent",
                               textDecoration: "none",
                             }
-                            
                       }
                     >
                       <ListItemButton>
@@ -166,6 +168,89 @@ const Sidebar = ({
                   </ListItem>
                 );
               })}
+
+              <ListItem
+                disablePadding
+                className="listItem__sidebar"
+                onClick={handleClick}
+                sx={{ color: theme.palette.secondary[100] }}
+              >
+                <ListItemButton>
+                  <ListItemIcon
+                    className="icon_sidebar"
+                    sx={{
+                      ml: "2rem",
+                      color: theme.palette.secondary[100],
+                    }}
+                  >
+                    <ReceiptLongOutlined />
+                  </ListItemIcon>
+                  <ListItemText primary="Order" />
+                  {open ? <ExpandLess /> : <ExpandMore />}
+                </ListItemButton>
+              </ListItem>
+              <Collapse in={open} timeout="auto" unmountOnExit>
+                <List
+                  component="div"
+                  disablePadding
+                  sx={{ color: theme.palette.secondary[100] }}
+                >
+                  {/* <ListItemButton sx={{ paddingLeft: "70px" }}>
+                    <ListItemIcon>
+                      <PendingOutlinedIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Pending" />
+                  </ListItemButton>
+                  <ListItemButton sx={{ paddingLeft: "70px" }}>
+                    <ListItemIcon>
+                      <DeliveryDiningOutlinedIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Deliveried" />
+                  </ListItemButton> */}
+                  {subNavItemOrder.map(({ text, icon, url }) => {
+                    return (
+                      <ListItem
+                        key={text}
+                        disablePadding
+                        className="listItem__sidebar"
+                      >
+                        <NavLink
+                          to={`/admin/orders/${url}`}
+                          className="nav__link--sidebar"
+                          style={({ isActive }) =>
+                            isActive
+                              ? {
+                                  color: theme.palette.secondary[100],
+                                  backgroundColor: theme.palette.secondary[300],
+                                  textDecoration: "none",
+                                  paddingLeft: "20px",
+                                }
+                              : {
+                                  color: theme.palette.secondary[100],
+                                  backgroundColor: "transparent",
+                                  textDecoration: "none",
+                                  paddingLeft: "20px",
+                                }
+                          }
+                        >
+                          <ListItemButton>
+                            <ListItemIcon
+                              className="icon_sidebar"
+                              sx={{
+                                ml: "2rem",
+                                color: theme.palette.secondary[100],
+                              }}
+                            >
+                              {icon}
+                            </ListItemIcon>
+                            <ListItemText primary={text} />
+                          </ListItemButton>
+                        </NavLink>
+                      </ListItem>
+                    );
+                  })}
+                </List>
+              </Collapse>
             </List>
           </Box>
         </Drawer>

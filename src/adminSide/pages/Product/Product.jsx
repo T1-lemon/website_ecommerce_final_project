@@ -2,10 +2,15 @@ import React, { useEffect } from "react";
 
 import { DataGrid } from "@mui/x-data-grid";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllProductsApi } from "../../../redux/slices/productSlice";
+import {
+  changeStatusProductApi,
+  getAllProductsApi,
+} from "../../../redux/slices/productSlice";
 import "./product.css";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
+import { VND } from "../../../utils/convertVND";
+import { toast } from "react-toastify";
 
 // ['id', 'name', 'price', 'image', 'description', 'status_number', 'createdAt', 'updatedAt', 'category_id', 'Category']
 // https://mui.com/x/react-data-grid/column-definition/
@@ -16,18 +21,23 @@ export default function Product() {
 
   const listProduct = useSelector((state) => state.product.products);
 
+  const changeStatusProduct = async (idProduct, status_number) => {
+    await toast.success("The status product has been successfully changed!");
+    await dispatch(changeStatusProductApi(idProduct, status_number));
+  };
+
   const columns = [
     {
       renderHeader: (params) => <strong>{params.colDef.headerName} </strong>,
       field: "id",
       headerName: "ID",
-      width: 130,
+      width: 80,
     },
     {
       renderHeader: (params) => <strong>{params.colDef.headerName} </strong>,
       field: "image",
       headerName: "Image",
-      width: 150,
+      width: 100,
       sortable: false,
       filterable: false,
       renderCell: (params) => (
@@ -46,20 +56,20 @@ export default function Product() {
       headerName: "Price",
       width: 130,
       type: "number",
+      valueFormatter: (params) => {
+        return VND.format(params.value);
+      },
     },
 
     {
       renderHeader: (params) => <strong>{params.colDef.headerName} </strong>,
       field: "status_number",
       headerName: "Status Product",
-      // type: "boolean",
       description: "This column has a value getter and is not sortable.",
       sortable: false,
-      width: 160,
+      width: 140,
       valueFormatter: (params) => {
-        const statusProduct = params.value
-          ? "Stocking"
-          : "Temporarily out of stock";
+        const statusProduct = params.value ? "Stocking" : "Out of stock";
         return statusProduct;
       },
     },
@@ -68,7 +78,7 @@ export default function Product() {
       renderHeader: (params) => <strong>{params.colDef.headerName} </strong>,
       field: "action",
       headerName: "Action",
-      width: 130,
+      width: 200,
       sortable: false,
       filterable: false,
       renderCell: (params) => {
@@ -76,9 +86,32 @@ export default function Product() {
 
         return (
           <>
+            {product.status_number ? (
+              <Button
+                variant="contained"
+                color="success"
+                onClick={() => {
+                  changeStatusProduct(product.id, false);
+                }}
+              >
+                Out of stock
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                color="success"
+                onClick={() => {
+                  changeStatusProduct(product.id, true);
+                }}
+              >
+                Stocking
+              </Button>
+            )}
+
             <Button
               variant="contained"
               color="warning"
+              sx={{ marginLeft: "4px" }}
               onClick={() => {
                 navigate(`/admin/edit_product/${product.id}`, {
                   state: product,
@@ -107,7 +140,7 @@ export default function Product() {
         Add Product
       </Button>
 
-      <div style={{ height: "78vh", width: "100%" }}>
+      <div style={{ height: "78vh", width: "100%", padding: "0px 20px" }}>
         <DataGrid
           rowHeight={80}
           rows={rows}
