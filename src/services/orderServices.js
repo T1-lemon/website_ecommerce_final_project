@@ -41,7 +41,7 @@ export const getDetailsOrderService = async (dataOrderDetail) => {
       method: "get",
       url: `orderItem/${dataOrderDetail.id}`,
       headers: {
-        Authorization: "Bearer " + `${dataOrderDetail.accessToken}`,
+        Authorization: "Bearer " + JSON.parse(localStorage.getItem("token")),
       },
     });
     return respone;
@@ -49,3 +49,22 @@ export const getDetailsOrderService = async (dataOrderDetail) => {
     return error;
   }
 };
+
+export const getAllOrderService = () => {
+  return requestApi({
+    method: "get",
+    url: `order/get_all_order`,
+  });
+};
+
+
+export const changeStatusOrderService = (idOrder,status_order)=>{
+  return requestApi({
+    method: "put",
+    url: `order/change_status_order/${idOrder}`,
+    data:{status_order},
+    headers: {
+        Authorization: "Bearer " + JSON.parse(localStorage.getItem("token")),
+      },
+  });
+}

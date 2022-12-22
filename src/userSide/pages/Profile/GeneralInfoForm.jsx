@@ -19,7 +19,7 @@ import { editProfileApi } from "../../../redux/slices/userSlice";
 
 export const GeneralInfoForm = () => {
   const userLogin = JSON.parse(localStorage.getItem("currentUser"));
-    const token = JSON.parse(localStorage.getItem("token"));
+  const token = JSON.parse(localStorage.getItem("token"));
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -33,8 +33,8 @@ export const GeneralInfoForm = () => {
     },
 
     onSubmit: async (values) => {
-        // console.log(values);
-        await dispatch(editProfileApi(userLogin.id, values,token));
+      // console.log(values);
+      await dispatch(editProfileApi(userLogin.id, values, token));
       toast.success("Profile Changed Successfully");
     },
   });
@@ -120,7 +120,11 @@ export const GeneralInfoForm = () => {
             </Col>
           </Row>
           <div className="mt-3">
-            <Button variant="primary" type="submit">
+            <Button
+              variant="primary"
+              type="submit"
+              style={{ backgroundColor: "#0a1d37" }}
+            >
               Save All
             </Button>
           </div>

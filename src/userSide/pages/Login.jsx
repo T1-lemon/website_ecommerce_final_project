@@ -25,9 +25,9 @@ const Login = () => {
       // .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/),
       password: Yup.string()
         .required()
-        .matches(
-          /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d][A-Za-z\d!@#$%^&*()_+]{7,19}$/
-        ),
+        // .matches(
+        //   /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d][A-Za-z\d!@#$%^&*()_+]{7,19}$/
+        // ),
     }),
   });
   const handleSubmit = (e) => {

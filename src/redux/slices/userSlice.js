@@ -1,7 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { getCurrentUser, loginServices } from "../../services/loginServices";
 import { signupServices } from "../../services/signupService";
-import { editProfileService } from "../../services/userService";
+import {
+  editProfileService,
+  getInforUserService,
+  uploadAvatarService,
+} from "../../services/userService";
 
 export const userSlice = createSlice({
   name: "user",
@@ -59,13 +63,22 @@ export const userSignupApi = createAsyncThunk(
     await signupServices(dataSignup);
   }
 );
-export const editProfileApi = (userId,userEdit,token) => {
-  // console.log(userId,userEdit);
+export const editProfileApi = (userId, userEdit, token) => {
   return async (dispatch) => {
-    const { data } = await editProfileService(userId,userEdit,token);
-    // console.log(data);
+    const { data } = await editProfileService(userId, userEdit, token);
 
     localStorage.setItem("currentUser", JSON.stringify(data));
+  };
+};
 
+export const uploadAvatarApi = (idUser, formData) => {
+  return async (dispatch) => {
+    try {
+      await uploadAvatarService(idUser, formData);
+      const { data } = await getInforUserService();
+      localStorage.setItem("currentUser", JSON.stringify(data));
+    } catch (error) {
+      console.log(error);
+    }
   };
 };
