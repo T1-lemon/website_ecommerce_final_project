@@ -47,7 +47,7 @@ const Home = () => {
       setNewProducts(filterNewProducts);
       setTrendingProducts(filterTrendingProducts);
     }
-  }, []);
+  }, [products]);
 
   return (
     <Helmet title={"Home"}>
