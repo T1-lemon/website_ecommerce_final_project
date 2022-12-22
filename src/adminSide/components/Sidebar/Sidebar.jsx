@@ -46,11 +46,11 @@ const navItems = [
     icon: <ShoppingCartOutlined />,
     url: "products",
   },
-  {
-    text: "Category",
-    icon: <Groups2Outlined />,
-    url: "category",
-  },
+  // {
+  //   text: "Category",
+  //   icon: <Groups2Outlined />,
+  //   url: "category",
+  // },
   // {
   //   text: "Blog",
   //   icon: <PublicOutlined />,

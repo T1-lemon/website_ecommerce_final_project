@@ -16,26 +16,25 @@ const filterProducts = (products, filterValue, sortValue, searchValue) => {
       ? products
       : products.filter((item) => item.Category.category_name === filterValue);
 
-  console.log(filterProductsSuccess);
+  const filterProductsSuccessClone = [... filterProductsSuccess]
   const sortProductSuccess =
     sortValue === "all"
-      ? filterProductsSuccess
+      ? filterProductsSuccessClone
       : sortValue === "ascending"
-      ? filterProductsSuccess.sort((a, b) => a.price - b.price)
-      : filterProductsSuccess.sort((a, b) => b.price - a.price);
+      ? filterProductsSuccessClone.sort((a, b) => a.price - b.price)
+      : filterProductsSuccessClone.sort((a, b) => b.price - a.price);
 
   const searchProducts =
     searchValue === ""
       ? sortProductSuccess
       : sortProductSuccess.filter((item) =>
-          item.productName.toLowerCase().includes(searchValue.toLowerCase())
+          item.name.toLowerCase().includes(searchValue.toLowerCase())
         );
   return searchProducts;
 };
 
 const Shop = () => {
   const products = useSelector((state) => state.product.products);
-  // console.log(products[0].price)
   const [productsData, setProductsData] = useState([]);
   useEffect(() => {
     setProductsData(products);
@@ -59,7 +58,9 @@ const Shop = () => {
 
   const handleSearch = (e) => {
     const currentSearchValue = e.target.value;
+    console.log("currentSearchValue", currentSearchValue);
     const searchedProducts = filterProducts(
+      products,
       filterValue,
       sortValue,
       currentSearchValue
@@ -71,7 +72,7 @@ const Shop = () => {
 
   const handleSort = (e) => {
     const sortValue = e.target.value;
-    const sortProducts = filterProducts(filterValue, sortValue, searchValue);
+    const sortProducts = filterProducts(products,filterValue, sortValue, searchValue);
 
     setSortValue(sortValue);
     setProductsData(sortProducts);

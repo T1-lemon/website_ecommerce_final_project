@@ -19,56 +19,42 @@ import { getAllProductsApi } from "../../redux/slices/productSlice";
 import { useNavigate } from "react-router-dom";
 const Home = () => {
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  const products = useSelector(state => state.product.products)
+  const products = useSelector((state) => state.product.products);
 
   const [trendingProducts, setTrendingProducts] = useState([]);
-  const [bestSalesProducts, setBestSalesProducts] = useState([]);
-  const [mobileProducts, setMobileProducts] = useState([]);
-  const [wirelessProducts, setWirelessProducts] = useState([]);
-  const [popularProducts, setPopularProducts] = useState([]);
+  const [newProducts, setNewProducts] = useState([]);
 
   const year = new Date().getFullYear();
 
-  const filterTrendingProducts = products.filter(
-    (item) => item.Category.category_name === "Sofa"
-  ).slice(0,4);
-
-  console.log(products);
-
-  const filterBestSalesProducts = products.filter(
-    (item) => item.Category.category_name === "Đèn"
-  ).slice(0,4);
-
-  
-  const filterMobileProducts = products.filter(
-    (item) => item.Category.category_name === "Bàn làm việc"
-  ).slice(0,4);
-
   useEffect(() => {
-    
-    
-    
-    const filterWirelessProducts = products.filter(
-      (item) => item.category === "wireless"
-    );
-    const filterPopularProducts = products.filter(
-      (item) => item.category === "watch"
-    );
+    const currentDate = new Date();
+    if (products.lenght !== 0) {
+      const filterNewProducts = products
+        .filter((item) => {
+          const productCreatedDate = new Date(item.createdAt);
+          return (
+            parseFloat(
+              (currentDate - productCreatedDate) / (1000 * 60 * 60 * 24)
+            ) < 30
+          );
+        })
+        .slice(0, 8);
 
-    setTrendingProducts(filterTrendingProducts);
-    setBestSalesProducts(filterBestSalesProducts);
-    setMobileProducts(filterMobileProducts);
-    setWirelessProducts(filterWirelessProducts);
-    setPopularProducts(filterPopularProducts);
+      const filterTrendingProducts = products
+        .filter((item) => item.Category.category_name === "Đèn")
+        .slice(0, 4);
 
+      setNewProducts(filterNewProducts);
+      setTrendingProducts(filterTrendingProducts);
+    }
   }, []);
-  
+
   return (
     <Helmet title={"Home"}>
       <section className="hero__section">
         <Container>
           <Row>
-            <Col lg="6" md="6" sm='6'>
+            <Col lg="6" md="6" sm="6">
               <div className="hero__content">
                 <p className="hero__subtitle">Trending product in {year}</p>
                 <h2>Make Your Interior More Minimalistic & Modern</h2>
@@ -82,7 +68,7 @@ const Home = () => {
                 </motion.button>
               </div>
             </Col>
-            <Col lg="6" md="6" sm='6'>
+            <Col lg="6" md="6" sm="6">
               <img src={heroImg} alt="heroImg" />
             </Col>
           </Row>
@@ -93,9 +79,13 @@ const Home = () => {
         <Container>
           <Row>
             <Col lg="12" className="text-center">
-              <h2 className="section__title">Trending Products</h2>
+              <h2 className="section__title">Your recommendation</h2>
             </Col>
-            <ProductsList data={filterTrendingProducts} />
+            {trendingProducts ? (
+              <ProductsList data={trendingProducts} />
+            ) : (
+              <></>
+            )}
           </Row>
         </Container>
       </section>
@@ -103,9 +93,13 @@ const Home = () => {
         <Container>
           <Row>
             <Col lg="12" className="text-center">
-              <h2 className="section__title">Best Sales</h2>
+              <h2 className="section__title">Trending Products</h2>
             </Col>
-            <ProductsList data={filterBestSalesProducts} />
+            {trendingProducts ? (
+              <ProductsList data={trendingProducts} />
+            ) : (
+              <></>
+            )}
           </Row>
         </Container>
       </section>
@@ -134,10 +128,10 @@ const Home = () => {
       <section className="new__arrivals">
         <Container>
           <Row>
-            <Col lg="12" className="text-center mb-5">
+            <Col lg="12" className="text-center">
               <h2 className="section__title">New Arrivals</h2>
             </Col>
-            <ProductsList data={filterMobileProducts} />
+            {newProducts ? <ProductsList data={newProducts} /> : <></>}
           </Row>
         </Container>
       </section>
@@ -146,4 +140,3 @@ const Home = () => {
 };
 
 export default Home;
-

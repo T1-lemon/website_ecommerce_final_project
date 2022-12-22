@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Container, Row, Col, Spinner, Progress } from "reactstrap";
 import { useParams } from "react-router-dom";
-import { motion } from "framer-motion";
-import { useDispatch } from "react-redux";
+import { calcLength, motion } from "framer-motion";
+import { useDispatch, useSelector } from "react-redux";
 import { addProductToCartApi, cartActions } from "../../redux/slices/cartSlice";
 
 import products from "../../assets/data/products";
@@ -31,7 +31,7 @@ const ProductDetails = () => {
   const [countAddCart, setCountAddCart] = useState(1);
   const [loading, setLoading] = useState(false);
   const [loadingCart, setLoadingCart] = useState(false);
-
+  const [productRecommend, setProductRecommend] = useState([]);
   const { id } = useParams();
 
   useEffect(() => {
@@ -47,12 +47,128 @@ const ProductDetails = () => {
         category: responeProduct.data.Category.category_name,
         feedBack: responeFeedBack.data,
       };
-      console.log(productDetail);
       await setProductDetail(productDetail);
       setLoading(false);
     };
     fetchDetailProductApi();
   }, []);
+
+
+  const products = useSelector((state) => state.product.products);
+  // console.log(products);
+  const productsDatasTrain = products.map((item) => {
+    const data = { id: item.id, description: item.description };
+    return data;
+  });
+  // console.log("productsDatasTrain", productsDatasTrain);
+  const tf_idf_function = (productsDatasTrain) => {
+    let splitArray = [];
+
+    productsDatasTrain.forEach((productData) => {
+      const splitString = productData.description.split(" ");
+      splitArray.push(splitString);
+    });
+
+    let tf_idfVectorArray = [];
+    productsDatasTrain.forEach((productData) => {
+      const splitString = productData.description.split(" ");
+      const splitData = [];
+      splitString.forEach((item) => {
+        if (
+          splitData.findIndex((itemFindIndex) => itemFindIndex === item) === -1
+        ) {
+          splitData.push(item);
+        }
+      });
+
+      let tf_idfVectorArrayItems = [];
+      splitData.forEach((itemSplit) => {
+        let docsWithTerm = 0;
+        const arrayItems = splitString.filter(
+          (itemFilter) => itemFilter === itemSplit
+        );
+        const tf = arrayItems.length / splitString.length;
+
+        splitArray.forEach((splitArrayItems) => {
+          if (
+            splitArrayItems.findIndex(
+              (itemFindIndex) => itemFindIndex === itemSplit
+            ) !== -1
+          )
+            docsWithTerm += 1;
+        });
+
+        const idf = Math.log(productsDatasTrain.length / docsWithTerm);
+
+        const tf_idf = tf * idf;
+        const tf_idfObject = { key: itemSplit, tf_idf: tf_idf };
+        tf_idfVectorArrayItems.push(tf_idfObject);
+      });
+      const tf_idfVectorArrayItemsSort = tf_idfVectorArrayItems
+        .sort((a, b) => b.tf_idf - a.tf_idf)
+        .slice(0, 5);
+      const tf_idfVectorArrayItemsWithID = {
+        id: productData.id,
+        tf_idfArray: tf_idfVectorArrayItemsSort,
+      };
+      tf_idfVectorArray.push(tf_idfVectorArrayItemsWithID);
+    });
+    return tf_idfVectorArray;
+  };
+
+  const cosineFunction = (currentData, compareData) => {
+    let sumNumerator = 0;
+    let sumCurrentData = 0;
+    let sumCompareData = 0;
+    for (let i = 0; i < currentData.length; i++) {
+      sumNumerator += currentData[i].tf_idf * compareData[i].tf_idf;
+      sumCurrentData += currentData[i].tf_idf ** 2;
+      sumCompareData += compareData[i].tf_idf ** 2;
+    }
+
+    const mulDenominator =
+      Math.sqrt(sumCurrentData) * Math.sqrt(sumCompareData);
+    const cosine = sumNumerator / mulDenominator;
+
+    return cosine;
+  };
+  
+  useEffect(() => {
+    const contentBasedRecommned = (productsDatasTrain) => {
+      if (products.length !== 0) {
+        const tf_idfVectorArray = tf_idf_function(productsDatasTrain);
+        const idDataTrain = id;
+        console.log(idDataTrain);
+        const currentTf_idfProduct = tf_idfVectorArray.find(
+          (itemFind) => itemFind.id == idDataTrain
+        );
+        let cosineArray = [];
+        tf_idfVectorArray.forEach((tf_idfVectorItem) => {
+          const cosine = cosineFunction(
+            currentTf_idfProduct.tf_idfArray,
+            tf_idfVectorItem.tf_idfArray
+          );
+          const cosineObj = { id: tf_idfVectorItem.id, cosine: cosine };
+          cosineArray.push(cosineObj);
+        });
+        const cosineArraySort = cosineArray
+          .sort((a, b) => b.cosine - a.cosine)
+          .slice(1, 5);
+        console.log(currentTf_idfProduct);
+
+        const productRecommend = [];
+        cosineArraySort.forEach((itemSort) => {
+          productRecommend.push(
+            products.find((itemProduct) => itemProduct.id === itemSort.id)
+          );
+        });
+        // console.log("productRecommend", productRecommend);
+        setProductRecommend(productRecommend);
+      }
+    };
+
+    contentBasedRecommned(productsDatasTrain);
+  }, [productDetail]);
   const [tab, setTab] = useState("desc");
   const [rating, setRating] = useState(0);
 
@@ -296,7 +412,11 @@ const ProductDetails = () => {
                 <Col lg="12" className="mt-5">
                   <h2 className="related__title">You might also like</h2>
                 </Col>
-                {/* <ProductsList data={relatedProducts} /> */}
+                {productRecommend ? (
+                  <ProductsList data={productRecommend} />
+                ) : (
+                  <></>
+                )}
               </Row>
             </Container>
           </section>

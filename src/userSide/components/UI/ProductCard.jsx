@@ -23,7 +23,7 @@ const ProductCard = (props) => {
           />
           <div className="p-2 product__info">
             <h3 className="product__name">
-              <Link to={`/shop/${item.id}`}>{item.name}</Link>
+              <Link reloadDocument to={`/shop/${item.id}`}>{item.name}</Link>
             </h3>
             <span>{item.Category.category_name}</span>
           </div>
