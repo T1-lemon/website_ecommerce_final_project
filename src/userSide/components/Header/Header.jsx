@@ -38,7 +38,6 @@ const Header = () => {
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   const userAvatar = currentUser ? currentUser.avatar : user_icon;
   const userName = currentUser ? currentUser.user_name : "";
-  console.log(currentUser);
   const menuRef = useRef(null);
 
   const totalQuantity = useSelector((state) => state.cart.totalQuantity);
@@ -73,7 +72,7 @@ const Header = () => {
               <div className="logo">
                 <img src={logo} alt="logo" />
                 <div>
-                  <h1>Multimart</h1>
+                  <h1>Jolie House</h1>
                 </div>
               </div>
             </Link>

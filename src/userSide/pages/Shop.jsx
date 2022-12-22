@@ -14,8 +14,9 @@ const filterProducts = (products, filterValue, sortValue, searchValue) => {
   const filterProductsSuccess =
     filterValue === "all"
       ? products
-      : products.filter((item) => item.category === filterValue);
+      : products.filter((item) => item.Category.category_name === filterValue);
 
+  console.log(filterProductsSuccess);
   const sortProductSuccess =
     sortValue === "all"
       ? filterProductsSuccess
@@ -33,11 +34,12 @@ const filterProducts = (products, filterValue, sortValue, searchValue) => {
 };
 
 const Shop = () => {
-  const products = useSelector(state => state.product.products)
+  const products = useSelector((state) => state.product.products);
+  // console.log(products[0].price)
   const [productsData, setProductsData] = useState([]);
   useEffect(() => {
-    setProductsData(products)
-  },[products])
+    setProductsData(products);
+  }, [products]);
   const [filterValue, setFilterValue] = useState("all");
   const [sortValue, setSortValue] = useState("all");
   const [searchValue, setSearchValue] = useState("");
@@ -85,11 +87,11 @@ const Shop = () => {
               <div className="filter__widget">
                 <select onChange={handleFilter}>
                   <option value="all">Filter By Category</option>
-                  <option value="sofa">Sofa</option>
-                  <option value="mobile">Mobile</option>
-                  <option value="chair">Chair</option>
-                  <option value="watch">Watch</option>
-                  <option value="wireless">Wireless</option>
+                  <option value="Sofa">Sofa</option>
+                  <option value="Bàn làm việc">Bàn làm việc</option>
+                  <option value="Đèn">Đèn</option>
+                  <option value="Đồng hồ">Đồng hồ</option>
+                  <option value="Tủ âm tường">Tủ âm tường</option>
                 </select>
               </div>
             </Col>
