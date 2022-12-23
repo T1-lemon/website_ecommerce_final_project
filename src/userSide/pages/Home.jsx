@@ -17,13 +17,15 @@ import counterImg from "../../assets/images/counter-timer-img.png";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProductsApi } from "../../redux/slices/productSlice";
 import { useNavigate } from "react-router-dom";
+import { getAllProductRecommend } from "../../services/recommendServices";
 const Home = () => {
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   const products = useSelector((state) => state.product.products);
 
+  // console.log("products", products);
   const [trendingProducts, setTrendingProducts] = useState([]);
   const [newProducts, setNewProducts] = useState([]);
-
+  const [productRecommend, setProductRecommend] = useState([]);
   const year = new Date().getFullYear();
 
   useEffect(() => {
@@ -49,6 +51,50 @@ const Home = () => {
     }
   }, [products]);
 
+  useEffect(() => {
+    if (products.lenght !== 0) {
+      const accessToken = JSON.parse(localStorage.getItem("token"));
+      const fetchApiGetAllProductRecommend = async () => {
+        const responeProductRecommend = await getAllProductRecommend(accessToken);
+         console.log("responeProductRecommend", responeProductRecommend); 
+        // const responeProductRecommend = [
+        //   {
+        //     rating: 1.7802607829281465,
+        //     idProduct: 12,
+        //   },
+        //   {
+        //     rating: 1.7802607829281465,
+        //     idProduct: 11,
+        //   },
+        // ];
+        let arrayProductRecommend = [];
+        responeProductRecommend.forEach((item) => {
+          if (
+            products.findIndex((itemFind) => itemFind.id === item.idProduct) !==
+            -1 && item.rating !== null
+          ) {
+            arrayProductRecommend.push(
+              products[
+                products.findIndex((itemFind) => itemFind.id === item.idProduct)
+              ]
+            );
+          }
+        });
+
+        console.log(arrayProductRecommend);
+        setProductRecommend(arrayProductRecommend.slice(0,8));
+      }
+      fetchApiGetAllProductRecommend();
+
+      // const fectchApi = async () => {
+      //   const accessToken = JSON.parse(localStorage.getItem("token"));
+      //   const responeProductRecommend = await getAllProductRecommend(accessToken);
+      //    console.log("responeProductRecommend", responeProductRecommend); 
+      // }
+
+      // fectchApi();
+    }
+  }, [products]);
   return (
     <Helmet title={"Home"}>
       <section className="hero__section">
@@ -75,20 +121,25 @@ const Home = () => {
         </Container>
       </section>
       <Services />
-      <section className="trending__products">
-        <Container>
-          <Row>
-            <Col lg="12" className="text-center">
-              <h2 className="section__title">Your recommendation</h2>
-            </Col>
-            {trendingProducts ? (
-              <ProductsList data={trendingProducts} />
-            ) : (
-              <></>
-            )}
-          </Row>
-        </Container>
-      </section>
+      {productRecommend.length !== 0 ? (
+        <section className="trending__products">
+          <Container>
+            <Row>
+              <Col lg="12" className="text-center">
+                <h2 className="section__title">Your recommendation</h2>
+              </Col>
+              {trendingProducts ? (
+                <ProductsList data={productRecommend} />
+              ) : (
+                <></>
+              )}
+            </Row>
+          </Container>
+        </section>
+      ) : (
+        <></>
+      )}
+
       <section className="best__sales">
         <Container>
           <Row>

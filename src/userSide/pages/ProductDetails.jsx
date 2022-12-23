@@ -55,12 +55,10 @@ const ProductDetails = () => {
 
 
   const products = useSelector((state) => state.product.products);
-  // console.log(products);
   const productsDatasTrain = products.map((item) => {
     const data = { id: item.id, description: item.description };
     return data;
   });
-  // console.log("productsDatasTrain", productsDatasTrain);
   const tf_idf_function = (productsDatasTrain) => {
     let splitArray = [];
 
@@ -69,6 +67,7 @@ const ProductDetails = () => {
       splitArray.push(splitString);
     });
 
+    console.log("splitArray", splitArray);
     let tf_idfVectorArray = [];
     productsDatasTrain.forEach((productData) => {
       const splitString = productData.description.split(" ");
@@ -88,7 +87,7 @@ const ProductDetails = () => {
           (itemFilter) => itemFilter === itemSplit
         );
         const tf = arrayItems.length / splitString.length;
-
+        
         splitArray.forEach((splitArrayItems) => {
           if (
             splitArrayItems.findIndex(
@@ -138,7 +137,6 @@ const ProductDetails = () => {
       if (products.length !== 0) {
         const tf_idfVectorArray = tf_idf_function(productsDatasTrain);
         const idDataTrain = id;
-        console.log(idDataTrain);
         const currentTf_idfProduct = tf_idfVectorArray.find(
           (itemFind) => itemFind.id == idDataTrain
         );
@@ -153,7 +151,7 @@ const ProductDetails = () => {
         });
         const cosineArraySort = cosineArray
           .sort((a, b) => b.cosine - a.cosine)
-          .slice(1, 5);
+          .slice(1,5);
         console.log(currentTf_idfProduct);
 
         const productRecommend = [];
@@ -162,7 +160,6 @@ const ProductDetails = () => {
             products.find((itemProduct) => itemProduct.id === itemSort.id)
           );
         });
-        // console.log("productRecommend", productRecommend);
         setProductRecommend(productRecommend);
       }
     };
